@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jackify - Web Player</title>
+    <!-- Favicon -->
+    <link class="favicon" rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg">
+    <!-- Google Fonts (Montserrat for modern music player feel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for music player controls and symbols -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1. LOGIN SCREEN OVERLAY (Covers the whole viewport before login) -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fa-solid fa-compact-disc login-logo-disc"></i>
+                <span class="login-logo-text">Jackify</span>
+            </div>
+            <h2 class="login-heading">To continue, log in to Jackify.</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="login-username" class="input-label">What is your name?</label>
+                    <input type="text" id="login-username" class="login-input" placeholder="Enter your name" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="login-password" class="input-label">Password</label>
+                    <input type="password" id="login-password" class="login-input" placeholder="Password" required>
+                </div>
+                <div class="login-error-msg hidden" id="login-error-box">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="login-error-text">Please enter a username and password.</span>
+                </div>
+                <button type="submit" class="login-submit-btn">LOG IN</button>
+            </form>
+            <div class="login-divider-row">
+                <hr><span>OR</span><hr>
+            </div>
+            <div class="login-socials">
+                <button class="social-btn facebook"><i class="fa-brands fa-facebook"></i> Continue with Facebook</button>
+                <button class="social-btn google"><i class="fa-brands fa-google"></i> Continue with Google</button>
+            </div>
+            <div class="login-footer">
+                <p>Don't have an account? <a href="#" class="signup-link">Sign up for Jackify</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN APPLICATION WORKSPACE -->
+    <div class="spotify-container" id="app-workspace">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="#">
+                    <i class="fa-solid fa-compact-disc logo-icon"></i>
+                    <span class="logo-text">Jackify</span>
+                </a>
+            </div>
+            
+            <div class="nav-links">
+                <a href="#" class="nav-item active" id="nav-home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Search</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-library">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Your Library</span>
+                </a>
+            </div>
+
+            <div class="playlist-section">
+                <div class="playlist-header">
+                    <span class="playlist-title">Playlists</span>
+                    <button class="add-playlist-btn" id="create-playlist-plus-btn" title="Create Playlist">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                <div class="playlist-actions">
+                    <a href="#" class="playlist-action-item" id="create-playlist-btn">
+                        <div class="action-icon create-playlist">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <span>Create Playlist</span>
+                    </a>
+                    <a href="#" class="playlist-action-item" id="liked-songs-shortcut">
+                        <div class="action-icon liked-songs">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <span>Liked Songs</span>
+                    </a>
+                </div>
+                <hr class="divider">
+                <div class="playlist-list">
+                    <a href="#" class="playlist-link">My Playlist #1</a>
+                    <a href="#" class="playlist-link">Romantic Hits</a>
+                    <a href="#" class="playlist-link">Chill Vibes</a>
+                    <a href="#" class="playlist-link">Telugu Chartbusters</a>
+                    <a href="#" class="playlist-link">Tamil Melodies</a>
+                    <a href="#" class="playlist-link">Best of Bruno Mars</a>
+                </div>
+            </div>
+            
+            <!-- App Installation Prompt -->
+            <div class="install-prompt">
+                <a href="#" class="install-link" id="install-app-btn">
+                    <i class="fa-regular fa-circle-down"></i>
+                    <span>Install App</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT PANEL -->
+        <main class="main-content">
+            <!-- Header bar -->
+            <header class="main-header">
+                <div class="nav-arrows">
+                    <button class="arrow-btn" id="header-prev-arrow" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="arrow-btn" id="header-next-arrow" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                
+                <!-- Simple Dynamic Search Box (shown when Search Nav is clicked) -->
+                <div class="search-container hidden" id="header-search-bar">
+                    <i class="fa-solid fa-magnifying-glass search-bar-icon"></i>
+                    <input type="text" id="search-input" placeholder="What do you want to play?" autocomplete="off">
+                    <button id="search-clear-btn" class="hidden"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="user-profile">
+                    <button class="upgrade-btn" id="explore-premium-btn">Explore Premium</button>
+                    
+                    <div class="profile-dropdown-container">
+                        <button class="profile-btn" id="profile-menu-btn">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&q=80" alt="Profile" class="profile-avatar">
+                            <span class="profile-name" id="profile-display-name">Guest User</span>
+                            <i class="fa-solid fa-caret-down caret-icon"></i>
+                        </button>
+                        
+                        <div class="profile-dropdown-menu hidden" id="profile-dropdown">
+                            <a href="#" class="dropdown-item" id="menu-account-btn"><i class="fa-regular fa-user"></i> Account</a>
+                            <a href="#" class="dropdown-item" id="menu-profile-btn"><i class="fa-regular fa-id-badge"></i> Profile</a>
+                            <a href="#" class="dropdown-item" id="menu-premium-btn"><i class="fa-regular fa-star"></i> Upgrade to Premium</a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item" id="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="scroll-container">
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <h1 id="greeting-title">Good Evening</h1>
+                    <div class="quick-play-grid" id="quick-play-container">
+                        <!-- Filled by JS -->
+                    </div>
+                </section>
+
+                <!-- Cards Grid Section (Shows all songs in beautiful layouts) -->
+                <section class="playlist-grid-section">
+                    <div class="section-title-bar">
+                        <h2>Made for You</h2>
+                        <a href="#" class="show-all-link" id="show-all-songs-btn">Show all</a>
+                    </div>
+                    <div class="cards-grid" id="songs-cards-container">
+                        <!-- Filled by JS -->
+                    </div>
+                </section>
+
+                <!-- Table List Section (Spotify style list view) -->
+                <section class="song-table-section">
+                    <div class="section-title-bar">
+                        <h2>Featured Songs</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="song-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-num">#</th>
+                                    <th class="col-title">Title</th>
+                                    <th class="col-album">Movie / Album</th>
+                                    <th class="col-date-added"><i class="fa-regular fa-calendar"></i> Date Added</th>
+                                    <th class="col-duration"><i class="fa-regular fa-clock"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="song-rows-container">
+                                <!-- Filled by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <footer class="content-footer">
+                    <div class="footer-links">
+                        <div class="links-column">
+                            <h3>Company</h3>
+                            <a href="#" class="footer-static-link">About</a>
+                            <a href="#" class="footer-static-link">Jobs</a>
+                            <a href="#" class="footer-static-link">For the Record</a>
+                        </div>
+                        <div class="links-column">
+                            <h3>Communities</h3>
+                            <a href="#" class="footer-static-link">For Artists</a>
+                            <a href="#" class="footer-static-link">Developers</a>
+                            <a href="#" class="footer-static-link">Advertising</a>
+                            <a href="#" class="footer-static-link">Investors</a>
+                            <a href="#" class="footer-static-link">Vendors</a>
+                        </div>
+                        <div class="links-column">
+                            <h3>Useful links</h3>
+                            <a href="#" class="footer-static-link">Support</a>
+                            <a href="#" class="footer-static-link">Free Mobile App</a>
+                        </div>
+                    </div>
+                    <hr class="footer-divider">
+                    <p class="copyright">&copy; 2026 Jackify. All buttons working.</p>
+                </footer>
+            </div>
+        </main>
+        
+        <!-- AUDIO ELEMENT -->
+        <audio id="main-audio"></audio>
+
+        <!-- FOOTER PLAYER BAR -->
+        <footer class="player-bar">
+            <!-- Left Panel: Currently Playing Info -->
+            <div class="player-left">
+                <div class="now-playing-img-container">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop&q=80" alt="Album Cover" class="now-playing-img" id="current-album-art">
+                </div>
+                <div class="now-playing-info">
+                    <span class="track-title" id="current-title">Sattru Mun Varai</span>
+                    <span class="track-artist" id="current-artist">Neethaane En Ponvasantham</span>
+                </div>
+                <button class="player-like-btn" id="like-btn" title="Save to Your Library">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Center Panel: Playback Controls & Progress Bar -->
+            <div class="player-center">
+                <div class="playback-controls">
+                    <button class="control-btn" id="shuffle-btn" title="Enable shuffle"><i class="fa-solid fa-shuffle"></i></button>
+                    <button class="control-btn" id="prev-btn" title="Previous"><i class="fa-solid fa-backward-step"></i></button>
+                    <button class="control-btn play-pause-btn" id="play-pause-btn" title="Play"><i class="fa-solid fa-play"></i></button>
+                    <button class="control-btn" id="next-btn" title="Next"><i class="fa-solid fa-forward-step"></i></button>
+                    <button class="control-btn" id="repeat-btn" title="Enable repeat"><i class="fa-solid fa-repeat"></i></button>
+                </div>
+                <div class="playback-bar">
+                    <span class="time-stamp" id="current-time">0:00</span>
+                    <div class="progress-slider-container" id="progress-container">
+                        <div class="progress-slider-bg">
+                            <div class="progress-slider-fill" id="progress-fill"></div>
+                            <div class="progress-slider-thumb" id="progress-thumb"></div>
+                        </div>
+                        <input type="range" id="progress-range" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-stamp" id="total-time">0:00</span>
+                </div>
+            </div>
+
+            <!-- Right Panel: Volume and Utilities -->
+            <div class="player-right">
+                <button class="control-btn right-icon" id="lyrics-btn" title="Lyrics"><i class="fa-solid fa-microphone-lines"></i></button>
+                <button class="control-btn right-icon" id="queue-btn" title="Queue"><i class="fa-solid fa-list-ul"></i></button>
+                <button class="control-btn right-icon" id="device-btn" title="Connect to a device"><i class="fa-solid fa-laptop-code"></i></button>
+                
+                <div class="volume-container">
+                    <button class="control-btn right-icon" id="volume-mute-btn" title="Mute"><i class="fa-solid fa-volume-high"></i></button>
+                    <div class="volume-slider-container" id="volume-container-bar">
+                        <div class="volume-slider-bg">
+                            <div class="volume-slider-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" id="volume-range" min="0" max="100" value="70">
+                    </div>
+                </div>
+                
+                <button class="control-btn right-icon" id="fullscreen-btn" title="Full screen"><i class="fa-solid fa-maximize"></i></button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
